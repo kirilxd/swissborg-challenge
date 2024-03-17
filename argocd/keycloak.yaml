@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak
+  namespace: argo
+spec:
+  project: default
+  source:
+    repoURL: 'https://codecentric.github.io/helm-charts'
+    targetRevision: '18.4.4'
+    chart: keycloak
+    helm:
+      parameters:
+        - name: keycloak.username
+          value: "admin"
+        - name: keycloak.password
+          value: "admin"
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: identity
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

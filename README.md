@@ -27,3 +27,9 @@ To install traefik in cluster with argocd `argocd/traefik.yaml` which after appl
 Resources used:
 * https://argo-cd.readthedocs.io/en/stable/user-guide/helm/
 * https://doc.traefik.io/traefik/getting-started/install-traefik/#use-the-helm-chart
+
+# Task 4
+
+Keycloak was installed to the cluster by applying `argocd/keycloak.yaml`. Helm parameters were specified to set default username and password for admin.
+
+After installing, I ran `kubectl port-forward svc/keycloak-http 8080:80 -n identity` to access keycloak admin console in the browser and verify that it's working properly.
