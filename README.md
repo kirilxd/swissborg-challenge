@@ -33,3 +33,6 @@ Resources used:
 Keycloak was installed to the cluster by applying `argocd/keycloak.yaml`. Helm parameters were specified to set default username and password for admin.
 
 After installing, I ran `kubectl port-forward svc/keycloak-http 8080:80 -n identity` to access keycloak admin console in the browser and verify that it's working properly.
+
+Resources used:
+https://www.keycloak.org/getting-started/getting-started-kube
