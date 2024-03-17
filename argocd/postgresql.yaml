@@ -11,7 +11,7 @@ spec:
     chart: postgresql
     helm:
       parameters:
-        - name: global.postgresql.auth.postgresqlPassword
+        - name: global.postgresql.auth.postgresPassword
           value: "admin"
         - name: volumePermissions.enabled
           value: "true"
