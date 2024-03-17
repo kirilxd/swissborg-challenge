@@ -36,3 +36,8 @@ After installing, I ran `kubectl port-forward svc/keycloak-http 8080:80 -n ident
 
 Resources used:
 https://www.keycloak.org/getting-started/getting-started-kube
+
+# Task 5
+
+To deploy postgresql to the cluster I applied argocd configuration in `argocd/postgresql.yaml` which uses `postgresql` helm chart from https://charts.bitnami.com/bitnami.
+This chart provides PVC for data storage which ensures that data persists across pod restarts and deployments, and integrates well with dynamic volume provisioning in Kubernetes.
