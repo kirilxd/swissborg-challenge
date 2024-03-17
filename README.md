@@ -19,3 +19,11 @@ In order to install argocd three steps were performed:
 3. Define ArgoCD installation in `terraform/argo.tf`. It uses helm to install argocd and specifies `argocd/application.yaml` as values file
 
 Resources used: https://piotrminkowski.com/2022/06/28/manage-kubernetes-cluster-with-terraform-and-argo-cd/
+
+# Task 3 
+
+To install traefik in cluster with argocd `argocd/traefik.yaml` which after applying creates argocd application with inflated helm chart taken from `source:`
+
+Resources used:
+* https://argo-cd.readthedocs.io/en/stable/user-guide/helm/
+* https://doc.traefik.io/traefik/getting-started/install-traefik/#use-the-helm-chart
