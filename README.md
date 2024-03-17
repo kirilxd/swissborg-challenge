@@ -6,3 +6,16 @@ To start minikube the following command was executed:
 `minikube start -p swissborg`
 
 Next step was creating Terraform manifest `terraform/providers.tf` and running `terraform init` to initialize kubernetes provider with specified params.
+
+Resources used:
+https://medium.com/rahasak/terraform-kubernetes-integration-with-minikube-334c43151931
+
+# Task 2
+
+In order to install argocd three steps were performed:
+
+1. Define `helm` provider in `terraform/provider.tf`
+2. Add initial application definition in `argocd/application.yaml`
+3. Define ArgoCD installation in `terraform/argo.tf`. It uses helm to install argocd and specifies `argocd/application.yaml` as values file
+
+Resources used: https://piotrminkowski.com/2022/06/28/manage-kubernetes-cluster-with-terraform-and-argo-cd/
