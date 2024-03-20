@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: retool
+  namespace: argo
+spec:
+  project: default
+  source:
+    repoURL: 'https://charts.retool.com'
+    targetRevision: '6.1.0'
+    chart: retool
+    helm:
+      values: |
+        config: 
+          licenseKeySecretName: retool-secret
+          licenseKeySecretKey: license-key
+          encryptionKeySecretName: retool-secret
+          encryptionKeySecretKey: encryption-key
+          jwtSecretSecretName: retool-secret
+          jwtSecretSecretKey: jwt-secret
+          useInsecureCookies: true
+        image:
+          tag: latest
+        workflows:
+          enabled: false
+        codeExecutor:
+          enabled: false
+        livenessProbe:
+          failureThreshold: 20
+        ingress:
+          enabled: false
+        replicaCount: 1
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: retool
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

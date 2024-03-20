@@ -41,3 +41,15 @@ https://www.keycloak.org/getting-started/getting-started-kube
 
 To deploy postgresql to the cluster I applied argocd configuration in `argocd/postgresql.yaml` which uses `postgresql` helm chart from https://charts.bitnami.com/bitnami.
 This chart provides PVC for data storage which ensures that data persists across pod restarts and deployments, and integrates well with dynamic volume provisioning in Kubernetes.
+
+# Task 6
+
+As a starting point for deploying Retool application I took this official guide https://docs.retool.com/self-hosted/quickstarts/kubernetes/helm.
+
+This is where a need for introducing secrets management appeared since private keys need to be defined for retool deployment. There are multiple ways how secrets can be handled in scope of argocd deployment (https://argo-cd.readthedocs.io/en/stable/operator-manual/secret-management/), but in scope of the challenge and considering that retool helm chart provides a convenient way to use opaque k8s secrets, I decided to go with them. Secrets setup was done as described in k8s documentation (https://kubernetes.io/docs/tasks/configmap-secret/managing-secret-using-config-file/), applied `retool-secret.yaml` (it was edited with placeholder values to safely add it to VCS) manifest with kubectl and specified them in helm values in argocd application manifest. I also disabled workflows, code executor and chart's ingress as those are not needed in scope of the task and set replicas to 1 to save on the resources (default value of 2 caused overconsumption of RAM and made cluster unstable).
+
+After deployment was set up I managed to access retool application and added postgresql db deployed previously as resource by accessing it via cluster IP.
+
+![img.png](retool-db.png)
+
+This allows to add the datasource to retool application and therefore use it as frontend for postgresql.
