@@ -50,6 +50,15 @@ This is where a need for introducing secrets management appeared since private k
 
 After deployment was set up I managed to access retool application and added postgresql db deployed previously as resource by accessing it via cluster IP.
 
-![img.png](retool-db.png)
+![img.png](img/retool-db.png)
 
 This allows to add the datasource to retool application and therefore use it as frontend for postgresql.
+
+# Task 7
+
+For this task I decided to go with `kube-prometheus-stack` helm chart. It includes Prometheus, Grafana, Alertmanager, node-exporter, kube-state-metrics and an adapter for Kubernetes Metrics API-s which allows for easy and configurable monitoring of cluster resources. To install the chart in the cluster I created argocd manifest in `argocd/prometheus.yaml`, set `podMonitorSelectorNilUsesHelmValues` and `serviceMonitorSelectorNilUsesHelmValues` values to false so that Prometheus to pick up all the Pod and Service monitoring across the cluster.
+After applying the manifest I am able to login to grafana with the default admin credentials (password can be configured in helm values, but I am using the default one). When creating dashboard in grafana I can choose Prometheus (which is deployed as part of the stack) as a data source which scrapes information about cluster objects and create visualizations based on that.
+
+![img.png](img/grafana.png)
+
+
