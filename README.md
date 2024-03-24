@@ -15,24 +15,27 @@ https://medium.com/rahasak/terraform-kubernetes-integration-with-minikube-334c43
 In order to install argocd three steps were performed:
 
 1. Define `helm` provider in `terraform/provider.tf`
-2. Add initial application definition in `argocd/application.yaml`
-3. Define ArgoCD installation in `terraform/argo.tf`. It uses helm to install argocd and specifies `argocd/application.yaml` as values file
+2. Add initial application definition in `argocd/application.yaml`. It contains path to local minikube cluster as `destination` and repo URL with `argocd/manifests/cluster` as source.
+3. Define ArgoCD installation in `terraform/argo.tf`. It uses helm to install argocd and specifies `argocd/application.yaml` as values file.
+
+After performing these steps ArgoCD UI can be accessed by port-forwarding respective argocd-server service.
 
 Resources used: https://piotrminkowski.com/2022/06/28/manage-kubernetes-cluster-with-terraform-and-argo-cd/
 
 # Task 3 
 
-To install traefik in cluster with argocd `argocd/traefik.yaml` which after applying creates argocd application with inflated helm chart taken from `source:`
+To install traefik in cluster manifest in `argocd/traefik.yaml` was applied. After installation it is possible to apply CRD called IngressRoute provided by traefik, which allows to configure HTTP routers. The one created is located in `argocd/ingress` and it allows to access argocd-server service via argocd.internal host with http.
 
 Resources used:
 * https://argo-cd.readthedocs.io/en/stable/user-guide/helm/
 * https://doc.traefik.io/traefik/getting-started/install-traefik/#use-the-helm-chart
+* https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-ingressroute
 
 # Task 4
 
 Keycloak was installed to the cluster by applying `argocd/keycloak.yaml`. Helm parameters were specified to set default username and password for admin.
 
-After installing, I ran `kubectl port-forward svc/keycloak-http 8080:80 -n identity` to access keycloak admin console in the browser and verify that it's working properly.
+After installing, I ran `kubectl port-forward svc/keycloak-http 8080:80 -n identity` to access keycloak admin console in the browser and verify that it's working properly. To configure keycloak for user authorization and authentication new realm was created in scope of which new clients are to be created for 
 
 Resources used:
 https://www.keycloak.org/getting-started/getting-started-kube
@@ -61,4 +64,12 @@ After applying the manifest I am able to login to grafana with the default admin
 
 ![img.png](img/grafana.png)
 
+# Production readiness
 
+As ArgoCD is used in setting up the cluster if follows GitOps approach. We are storing all the configurations in version control which allows to restore the cluster in case of disaster. Most of the deployments used are provided as helm charts, which are open-source and supported by community that makes the reliable and secure. Also k8s secrets where used for defining secrets in configurations which is essential for keeping them safe.
+
+Further steps to improve production readiness:
+
+1. Minikube is a decent solution for provisioning local k8s cluster, but for production purposes another tool should be used (e.g. Kubernetes engines by cloud providers like GKE, EKS etc.). This will also allow to add more resources to the cluster on demand (there were some issues related to limited resources in Task 3).
+2. More robust secrets management solution should be used. While k8s secrets provides allows to store secrets not exposing them to version control, it still stores unencrypted secrets in etcd which is considered security issue. Secrets operators like Vault can be deployed to the cluster and configured to solve this issue.
+3. HTTPS should be introduced for publicly exposed ingress routes (Traefik provides such ability). This will include obtainig TLS certificate and specifying in Traefik manifest.
